@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <Window size="907,737">
     <VerticalLayout width="905" height="731" bkimage="D:\duilib-master\bin\skin\GameRes\headerctrl_hot.bmp">
         <HorizontalLayout width="907" height="46" bkcolor="#00A6CAF0">
@@ -6,19 +6,29 @@
             <Button name="Btn_close" float="true" pos="868,1,0,0" width="41" height="44" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="D:\duilib-master\bin\skin\GameRes\frame_btn_close_normal.bmp" hotimage="D:\duilib-master\bin\skin\FlashRes\frame_btn_close_disable.bmp" pushedimage="D:\duilib-master\bin\skin\FlashRes\frame_btn_close_down.bmp" />
         </HorizontalLayout>
         <HorizontalLayout width="906" height="42">
-            <Combo float="true" pos="9,5,0,0" width="136" height="33" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" normalimage="D:\duilib-master\bin\skin\GameRes\Combo_nor.bmp" dropboxsize="0,150">
-              <ListLabelElement text="  图片" selected="true" />
-                <ListLabelElement text="  视频" />
+            <Combo name="Combo_select" float="true" pos="10,4,0,0" width="136" height="33" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" normalimage="D:\duilib-master\bin\skin\GameRes\Combo_nor.bmp" dropboxsize="0,150">
+                <ListLabelElement />
+                <ListLabelElement />
             </Combo>
-            <Edit float="true" pos="171,7,0,0" width="360" height="29" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" readonly="true" />
-            <Button text="加载" float="true" pos="566,8,0,0" width="55" height="28" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="D:\duilib-master\bin\skin\GameRes\button_nor.bmp" hotimage="D:\duilib-master\bin\skin\GameRes\button_over.bmp" />
+            <Edit float="true" pos="170,4,0,0" width="371" height="36" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" readonly="true" />
+            <Button name="Btn_load" text="加载" float="true" pos="566,8,0,0" width="56" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="skin\GameRes\button_over.bmp" hotimage="skin\GameRes\button_nor.bmp" pushedimage="skin\GameRes\button_down.bmp" />
         </HorizontalLayout>
         <HorizontalLayout width="904" height="59">
-            <Edit float="true" pos="96,10,0,0" width="173" height="39" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
+            <Edit float="true" pos="96,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
             <Edit float="true" pos="372,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
-            <Label text="起始时间：" float="true" pos="17,12,0,0" width="68" height="34" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
-            <Label text="结束时间：" float="true" pos="286,18,0,0" width="70" height="25" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
-            <Button text="截取" float="true" pos="565,12,0,0" width="56" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="D:\duilib-master\bin\skin\GameRes\button_nor.bmp" hotimage="D:\duilib-master\bin\skin\GameRes\button_over.bmp" />
+            <Label name="Label_starttime" text="起始时间：" float="true" pos="14,13,0,0" width="70" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
+            <Label name="Label_endtime" text="结束时间：" float="true" pos="286,13,0,0" width="70" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
+            <Button name="Btn_cut" text="截取" float="true" pos="565,13,0,0" width="56" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="skin\GameRes\button_over.bmp" hotimage="skin\GameRes\button_nor.bmp" pushedimage="skin\GameRes\button_down.bmp" />
+        </HorizontalLayout>
+        <HorizontalLayout width="500" height="592">
+            <List width="500" height="592" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" headerbkimage="List/list_header_bg.png">
+                <ListHeader name="domain" bkimage="skin/ListRes/list_header_bg.png">
+                    <ListHeaderItem text="时间" width="100" height="23" minwidth="16" textcolor="#FF000000" sepwidth="1" align="center" hotimage="skin/ListRes/list_header_hot.png" pushedimage="skin/ListRes/list_header_pushed.png" sepimage="skin/ListRes/list_header_sep.png" />
+                    <ListHeaderItem text="文本" width="250" height="23" minwidth="16" textcolor="#FF000000" sepwidth="1" align="center" hotimage="skin/ListRes/list_header_hot.png" pushedimage="skin/ListRes/list_header_pushed.png" sepimage="skin/ListRes/list_header_sep.png" />
+                </ListHeader>
+                   <ListLabelElement text="张三"/>
+                <ListLabelElement text="李四"/>
+            </List>
         </HorizontalLayout>
     </VerticalLayout>
 </Window>
