@@ -19,6 +19,7 @@ class CDuiFramWnd : public WindowImplBase
 		return _T("");   //已经设置过默认路径则不用设置
 	}
 
+//消息循环
 	virtual void Notify(TNotifyUI& msg)
 	{
 		if (msg.sType == _T("click"))
@@ -34,9 +35,17 @@ class CDuiFramWnd : public WindowImplBase
 				MessageBox(m_hWnd, _T("最小化"), _T("test"), IDOK);
 			
 			}
+			else if (strName == _T("Btn_CreateGif"))
+			{
+				//生成GIF
+				GenerateGifWitPic();
+
+			}
 		}
+		//检查控件被选中
 		else if (msg.sType == _T("itemselect"))
 		{
+			//通过，名字找控件
 			CComboBoxUI * pComboSelect = (CComboBoxUI*)m_PaintManager.FindControl(_T("Combo_select"));
 			int iSelect = pComboSelect->GetCurSel();
 			if (0 == iSelect)
@@ -50,6 +59,39 @@ class CDuiFramWnd : public WindowImplBase
 			}
 		}
 
+	}
+	//给cmd控制台发消息
+	void SendMessage(CDuiString strCMD)
+	{
+		SHELLEXECUTEINFO strSEInfo;
+		memset(&strSEInfo, 0, sizeof(SHELLEXECUTEINFO));
+		strSEInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+		strSEInfo.fMask= SEE_MASK_NOCLOSEPROCESS;
+		strSEInfo.lpFile = _T("C:\\Windows\\System32\\cmd.exe");
+		strSEInfo.lpParameters = strCMD;
+		strSEInfo.nShow = SW_HIDE;
+
+		//给命令行发消息
+		ShellExecuteEx(&strSEInfo);
+		MessageBox(NULL, _T("命令操作完成"), _T("MakeGif"), IDOK);
+
+	}
+
+	void GenerateGifWitPic()
+	{
+		//构造命令
+		//CDuiString strCMD(_T("ffmpeg -r 3 -i .\\Pictrue\\%d.jpg output.gif -y"));
+		//CDuiString strCMD(_T("D:\\软件工具\\MakeGif\\MKgif\\Debug\\ffmpeg\\ffmpeg -r 3 -i .\\Pictrue\\%d.jpg output.gif -y"));
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -r 2 -i ");
+		strCMD += strPath;
+		strCMD += _T(".\\pictrue\\%d.jpg ");
+		strCMD += _T("output.gif -y");
+		//给CMD发送命令
+		SendMessage(strCMD);
 	}
 };
 
