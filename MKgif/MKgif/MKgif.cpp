@@ -2,6 +2,7 @@
 #include"UIlib.h"
 using namespace DuiLib;
 #pragma comment(lib,"DuiLib_ud.lib")
+#include<fstream>
 
 
 class CDuiFramWnd : public WindowImplBase
@@ -22,9 +23,9 @@ class CDuiFramWnd : public WindowImplBase
 //消息循环
 	virtual void Notify(TNotifyUI& msg)
 	{
+		CDuiString strName = msg.pSender->GetName();
 		if (msg.sType == _T("click"))
 		{
-			CDuiString strName = msg.pSender->GetName();
 			if (strName == _T("Btn_close"))
 			{
 				MessageBox(m_hWnd, _T("关闭窗口"), _T("test"), IDOK);
@@ -39,28 +40,75 @@ class CDuiFramWnd : public WindowImplBase
 			{
 				CutView();
 			}
+			else if (strName == _T("Btn_push"))
+			{
+				//找到要编辑框控件
+				CEditUI* pEdit = (CEditUI*)m_PaintManager.FindControl(_T("Edit_word"));
+				//将edit中的文本信息获取到
+				CDuiString strWord=pEdit->GetText();
+				//找到选中的list控件行
+				CListUI* pList = (CListUI*)m_PaintManager.FindControl(_T("list_srt"));
+				//找到文本被选中的那一项，即文本行
+				CListTextElementUI* pListItem = (CListTextElementUI*)pList->GetItemAt(pList->GetCurSel()); //找到当前选中行
+				pListItem->SetText(1, strWord);
+
+			}
+			else if (strName == _T("Btn_WriteTxt"))
+			{
+				WriteSRT();
+			}
 			else if (strName == _T("Btn_CreateGif"))
 			{
 				//生成GIF
 				GenerateGifWitPic();
 
 			}
+			else if (strName == _T("Btn_GetTxt"))
+			{
+				LoadSRT();
+			}
 		}
 		//检查控件被选中
 		else if (msg.sType == _T("itemselect"))
 		{
+			if (strName == _T("list_srt"))
+			{
+				CListUI* pList = (CListUI*)m_PaintManager.FindControl(_T("list_srt"));
+				//找到文本被选中的那一项，即文本行
+				CListTextElementUI* pListItem = (CListTextElementUI*)pList->GetItemAt(pList->GetCurSel()); //找到当前选中行
+				
+				//找到要写入的控件
+				CEditUI* pEdit=(CEditUI*)m_PaintManager.FindControl(_T("Edit_word"));
+				//将list选中的行中的文本信息增加到edit控件中
+				pEdit->SetText(pListItem->GetText(1));
+
+			}
+			if (strName == _T("Combo_select"))
+			{    //选中图片生成，让以下控件失效
+				CComboBoxUI* pCountUI =(CComboBoxUI*)m_PaintManager.FindControl(_T("Combo_select"));
+				if (0 == pCountUI->GetCurSel())
+				{
+					((CEditUI*)m_PaintManager.FindControl(_T("edit_strat")))->SetEnabled(false);
+
+				}
+				else
+				{
+					((CEditUI*)m_PaintManager.FindControl(_T("edit_strat")))->SetEnabled(true);
+
+				}
+			}
 			//通过，名字找控件
 			CComboBoxUI * pComboSelect = (CComboBoxUI*)m_PaintManager.FindControl(_T("Combo_select"));
 			int iSelect = pComboSelect->GetCurSel();
 			if (0 == iSelect)
 			{
-				MessageBox(m_hWnd, _T("图片"), _T("test"), IDOK);
-
+				//MessageBox(m_hWnd, _T("图片"), _T("test"), IDOK);
+				GenerateGifWitPic();
 			}
 			else
 			{
 				MessageBox(m_hWnd, _T("视频"), _T("test"), IDOK);
-
+				GenerateGifWithView();
 			}
 		}
 
@@ -79,11 +127,11 @@ class CDuiFramWnd : public WindowImplBase
 
 		//给命令行发消息
 		ShellExecuteEx(&strSEInfo);
-		MessageBox(NULL, _T("命令操作完成"), _T("MakeGif"), IDOK);
+		//MessageBox(NULL, _T("命令操作完成"), _T("MakeGif"), IDOK);
 
 	}
 
-	void GenerateGifWitPic()
+	void GenerateGifWitPic() //图片生成gif
 	{
 		//构造命令
 		//CDuiString strCMD(_T("ffmpeg -r 3 -i .\\Pictrue\\%d.jpg output.gif -y"));
@@ -125,7 +173,7 @@ class CDuiFramWnd : public WindowImplBase
 		//发送执行命令
 		SendMessage(strCMD);
 	}
-	void GetSRTFile()
+	void GetSRTFile() //提取出字幕文件
 	{
 		//ffmpeg -i 11.mkv input.srt -y
 		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
@@ -143,10 +191,80 @@ class CDuiFramWnd : public WindowImplBase
 
 	void LoadSRT()  //加载字幕文件
 	{
+		//将srt格式的字幕文件，加载到界面中的list控件中
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\input.srt");
 
+		std::ifstream fIn(strPath.GetData()); //输入流对象
+		char strSRTCon[521] = { 0 };
+		CListUI* pList=(CListUI*)m_PaintManager.FindControl(__T("list_srt"));
+		pList->RemoveAll();
+		while (!fIn.eof())
+		{
+			//读取字幕序号
+			fIn.getline(strSRTCon,512);
+
+			//读取时间轴
+			CListTextElementUI* pListItem = new CListTextElementUI;
+			pList->Add(pListItem);
+			fIn.getline(strSRTCon, 512);
+			pListItem->SetText(0, UTF8ToUnicode(strSRTCon)); //要将字符转化
+			//读取字幕
+			fIn.getline(strSRTCon, 512);
+			pListItem->SetText(1, UTF8ToUnicode(strSRTCon));
+
+			//读取空行
+			fIn.getline(strSRTCon, 512);
+		}
+		fIn.close();
+	}
+	void WriteSRT()
+	{
+		//将srt格式的字幕文件，加载到界面中的list控件中
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\input.srt");
+		std::ofstream fout(strPath.GetData()); //输入流对象
+
+		//1.从list控件中获取文本内容
+		CListUI* pList = (CListUI*)m_PaintManager.FindControl(_T("list_srt"));
+		int szCount=pList->GetCount();
+		for (int i = 0; i < szCount; ++i)
+		{
+			CListTextElementUI* pListItem = (CListTextElementUI*)pList->GetItemAt(i);
+			//序号
+			CDuiString strNo;
+			strNo.Format(_T("%d"), i + 1);
+
+			//时间轴
+			CDuiString strTime = pListItem->GetText(0);
+			//文本
+			CDuiString strWord = pListItem->GetText(1);
+			
+			//
+			string strNewLine = Unicode2ANSI(_T("\n"));
+			//写入行号
+			string itemNo = Unicode2ANSI(strNo);
+			fout.write(itemNo.c_str(),itemNo.size());
+			fout.write(strNewLine.c_str(), strNewLine.size());
+			//写入时间轴
+			string itemTime = Unicode2ANSI(strTime);
+			fout.write(itemTime.c_str(), itemNo.size());
+			fout.write(strNewLine.c_str(), strNewLine.size());
+
+			//写文本
+			string itemWord = Unicode2ANSI(strWord);
+			fout.write(itemWord.c_str(), itemNo.size());
+			fout.write(strNewLine.c_str(), strNewLine.size());
+
+			//每组字幕之间的空白行
+			fout.write(strNewLine.c_str(), strNewLine.size());
+
+		}
+		//2.将获取到的内容写到srt文件中
+		fout.close();
 	}
 
-	void GenerateView()
+	void GenerateView() //提取视频裸流
 	{
 		//ffmpeg - i 11.mkv - vcodec copy - an - sn 22.mkv - y 
 		//- an: 表示取消音频    - sn : 表示取消字幕
@@ -193,6 +311,30 @@ class CDuiFramWnd : public WindowImplBase
 		strCMD += _T("output.mkv -y");
 
 		SendMessage(strCMD);
+	}
+	CDuiString UTF8ToUnicode(const char* str)
+	{
+		//第一次调用，求取目标字符串长度，，该函数需要调用两次
+		int szLen = ::MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), nullptr, 0);
+		wchar_t* pContent = new wchar_t[szLen + 1];
+
+		//第二次调用进行真正的转换
+		::MultiByteToWideChar(CP_UTF8, 0, str, strlen(str), pContent, szLen);
+		pContent[szLen] = '\0';
+		CDuiString s(pContent);
+		delete[] pContent;
+		return s;
+	}
+	string Unicode2ANSI(CDuiString str) //unicode字符转到ascii字符
+	{
+		int szLen = ::WideCharToMultiByte(CP_ACP, 0, str.GetData(), -1, NULL, 0,NULL, FALSE);
+		char* pBuff = new char[szLen + 1];
+		::WideCharToMultiByte(CP_ACP, 0, str.GetData(), str.GetLength(), pBuff, szLen,NULL, FALSE);
+		pBuff[szLen] = '\0';
+		string s(pBuff);
+		delete[] pBuff;
+		return s;
+
 	}
 };
 
