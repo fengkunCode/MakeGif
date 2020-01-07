@@ -7,15 +7,15 @@
         </HorizontalLayout>
         <HorizontalLayout width="906" height="42">
             <Combo name="Combo_select" text="  图片" float="true" pos="10,4,0,0" width="136" height="33" itemtextcolor="#FF000000" itemselectedtextcolor="#FF000000" itemselectedbkcolor="#FFC1E3FF" itemhottextcolor="#FF000000" itemhotbkcolor="#FFE9F5FF" itemdisabledtextcolor="#FFCCCCCC" itemdisabledbkcolor="#FFFFFFFF" normalimage="D:\duilib-master\bin\skin\GameRes\Combo_nor.bmp" dropboxsize="0,150">
-                <ListLabelElement />
-                <ListLabelElement />
+                <ListLabelElement text="  图片" selected="true"/>
+                <ListLabelElement text="  视频"/>
             </Combo>
             <Edit float="true" pos="170,4,0,0" width="371" height="36" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" readonly="true" />
             <Button name="Btn_load" text="加载" float="true" pos="566,8,0,0" width="56" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="skin\GameRes\button_over.bmp" hotimage="skin\GameRes\button_nor.bmp" pushedimage="skin\GameRes\button_down.bmp" />
         </HorizontalLayout>
         <HorizontalLayout width="904" height="59">
-            <Edit float="true" pos="96,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
-            <Edit float="true" pos="372,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
+            <Edit name="edit_start" float="true" pos="96,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
+            <Edit name="edit_end" float="true" pos="372,9,0,0" width="168" height="37" bkcolor="#FFFFFFFF" textpadding="4,3,4,3" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
             <Label name="Label_starttime" text="起始时间：" float="true" pos="14,13,0,0" width="70" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
             <Label name="Label_endtime" text="结束时间：" float="true" pos="286,13,0,0" width="70" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" />
             <Button name="Btn_cut" text="截取" float="true" pos="565,13,0,0" width="56" height="30" textcolor="#FF000000" disabledtextcolor="#FFA7A6AA" align="center" normalimage="skin\GameRes\button_over.bmp" hotimage="skin\GameRes\button_nor.bmp" pushedimage="skin\GameRes\button_down.bmp" />
