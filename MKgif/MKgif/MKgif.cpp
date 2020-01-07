@@ -35,6 +35,10 @@ class CDuiFramWnd : public WindowImplBase
 				MessageBox(m_hWnd, _T("最小化"), _T("test"), IDOK);
 			
 			}
+			else if (strName == _T("Btn_cut"))
+			{
+				CutView();
+			}
 			else if (strName == _T("Btn_CreateGif"))
 			{
 				//生成GIF
@@ -51,6 +55,7 @@ class CDuiFramWnd : public WindowImplBase
 			if (0 == iSelect)
 			{
 				MessageBox(m_hWnd, _T("图片"), _T("test"), IDOK);
+
 			}
 			else
 			{
@@ -63,6 +68,7 @@ class CDuiFramWnd : public WindowImplBase
 	//给cmd控制台发消息
 	void SendMessage(CDuiString strCMD)
 	{
+		//命令窗口从该结构体中通过成员调用cmd，并将strCMD通过成员传给cmd
 		SHELLEXECUTEINFO strSEInfo;
 		memset(&strSEInfo, 0, sizeof(SHELLEXECUTEINFO));
 		strSEInfo.cbSize = sizeof(SHELLEXECUTEINFO);
@@ -91,6 +97,101 @@ class CDuiFramWnd : public WindowImplBase
 		strCMD += _T(".\\pictrue\\%d.jpg ");
 		strCMD += _T("output.gif -y");
 		//给CMD发送命令
+		SendMessage(strCMD);
+	}
+
+	void CutView()
+	{
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -i ");
+		strCMD += strPath;
+		strCMD += _T("input.mkv");
+		strCMD += _T(" -vcodec copy -acodec copy -ss ");
+
+		//获取时间
+		CDuiString strStartTime=((CEditUI*)m_PaintManager.FindControl(_T("edit_start")))->GetText();
+		CDuiString strEndTime = ((CEditUI*)m_PaintManager.FindControl(_T("edit_end")))->GetText();
+		strCMD += strStartTime;
+		strCMD += _T(" -to ");
+		strCMD += strEndTime;
+		strCMD += _T(" ");
+		//输出所在路径
+		strCMD += strPath;
+		strCMD += _T("11.mkv -y");
+
+		//发送执行命令
+		SendMessage(strCMD);
+	}
+	void GetSRTFile()
+	{
+		//ffmpeg -i 11.mkv input.srt -y
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -i ");
+		strCMD += strPath;
+		strCMD += _T("11.mkv");
+		strCMD += strPath;
+		strCMD += _T("input.srt -y");
+
+		SendMessage(strCMD);
+	}
+
+	void LoadSRT()  //加载字幕文件
+	{
+
+	}
+
+	void GenerateView()
+	{
+		//ffmpeg - i 11.mkv - vcodec copy - an - sn 22.mkv - y 
+		//- an: 表示取消音频    - sn : 表示取消字幕
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -i ");
+		strCMD += strPath; 
+		strCMD += _T("11.mkv -vcodec copy -an -sn ");
+		strCMD += strPath;
+		strCMD += _T("22.mkv -y");
+
+		SendMessage(strCMD);
+	}
+
+	void BornSRT2View()  //烧录
+	{
+		//ffmpeg -i 22.mkv -vf subtitles=11.srt 33.mkv -y
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -i ");
+		strCMD += strPath;
+		strCMD += _T("22.mkv -vf subtitles=11.srt ");
+		strCMD += strPath;
+		strCMD += _T("33.mkv -y");
+
+		SendMessage(strCMD);
+	}
+
+	void GenerateGifWithView() //生成Gif
+	{
+		//ffmpeg -i 33.mkv -vf scale=iw/2:ih/2 -f gif output.gif -y
+		CDuiString strPath = CPaintManagerUI::GetInstancePath();//获取工程目录，，debug下exe
+		strPath += _T("\\ffmpeg\\");
+		CDuiString strCMD(_T("/c "));
+		strCMD += strPath;
+		strCMD += _T("ffmpeg -i ");
+		strCMD += strPath;
+		strCMD += _T("33.mkv  -vf scale=iw/2:ih/2 -f gif ");
+		strCMD += strPath;
+		strCMD += _T("output.mkv -y");
+
 		SendMessage(strCMD);
 	}
 };
